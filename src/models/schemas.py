@@ -1,20 +1,28 @@
-from enum import Enum
-from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class MasteryStatus(str, Enum):
-    MASTERED = "mastered"        # ✓
-    NOT_MASTERED = "not_mastered"  # ✗
-    UNKNOWN = "unknown"           # ?
+class MasteryRecord(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
 
-
-class Concept(BaseModel):
-    id: str = Field(..., description="Unique slug, e.g. 'backpropagation'")
-    name: str = Field(..., description="Human-readable name")
-    domain: str = Field(default="", description="e.g. Math, CS, ML, Physics")
-    description: str = Field(default="", description="Short explanation of the concept")
-
-
-class ConceptAssessment(BaseModel):
     concept_id: str
-    status: MasteryStatus
+    mastery: float = Field(ge=0.0, le=1.0)
+    last_updated: datetime
+
+
+class Interaction(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    concept_id: str
+    interaction_type: str
+    content: str
+    correct: Optional[bool] = None
+    timestamp: datetime
+
+
+class StudentModel(BaseModel):
+    student_id: str
+    mastery: dict[str, float]      # concept_id -> mastery score
+    history: list[Interaction] = []
