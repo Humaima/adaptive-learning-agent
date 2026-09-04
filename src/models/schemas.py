@@ -52,7 +52,9 @@ class ConceptIdentification(BaseModel):
 class ConceptAssessment(BaseModel):
     concept_id: str
     status: MasteryStatus
-
+    mastery: float | None = Field(
+        default=None, description="Raw mastery score 0.0-1.0, or None if never assessed"
+    )
 
 class KnowledgeAssessmentResult(BaseModel):
     student_id: str
@@ -60,3 +62,20 @@ class KnowledgeAssessmentResult(BaseModel):
     target_concept_id: str
     learning_path: list[str]                # ordered prerequisites + target, from ConceptGraph
     assessments: list[ConceptAssessment]     # status per concept in the learning path
+
+class DifficultyLevel(str, Enum):
+    EASY = "easy"
+    MEDIUM = "medium"
+    HARD = "hard"
+
+
+class DifficultyEstimate(BaseModel):
+    ready_to_learn_target: bool = Field(
+        ..., description="True if the student can go straight to the originally asked concept"
+    )
+    concept_to_teach_next: str = Field(
+        ..., description="The concept id the Tutor should actually teach right now — "
+                          "either a blocking prerequisite, or the original target if no gap exists"
+    )
+    recommended_difficulty: DifficultyLevel
+    rationale: str = Field(..., description="Plain-language reason for this decision")

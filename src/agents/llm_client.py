@@ -28,7 +28,12 @@ def with_structured_output_retry(llm: ChatGroq, schema, prompt: str, include_raw
 
     structured_llm = llm.with_structured_output(
         schema,
-        method="json_schema",  # explicit — avoids the strict=True default bug on gpt-oss-120b
+        method="json_schema",
+        # Non-strict json_schema mode on gpt-oss-120b intermittently echoes the JSON
+        # schema itself before/instead of the actual answer, or otherwise fails to
+        # parse — silently yielding parsed=None rather than raising. strict=True uses
+        # constrained decoding and reliably returns clean data only.
+        strict=True,
         include_raw=include_raw,
     )
 
@@ -39,6 +44,15 @@ def with_structured_output_retry(llm: ChatGroq, schema, prompt: str, include_raw
         reraise=True,
     )
     def _call():
-        return structured_llm.invoke(prompt)
+        result = structured_llm.invoke(prompt)
+        # With include_raw=True a failed parse comes back as {"parsed": None, ...}
+        # instead of raising — turn that into a real exception so retry actually
+        # retries it, and so a final failure is a loud error, not a silent None.
+        if include_raw and isinstance(result, dict) and result.get("parsed") is None:
+            raise ValueError(
+                f"Structured output failed to parse into {schema!r}: "
+                f"{result.get('parsing_error')!r}"
+            )
+        return result
 
     return _call()

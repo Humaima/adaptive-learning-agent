@@ -74,7 +74,7 @@ def assess_knowledge(
     for concept_id in learning_path:
         mastery = get_mastery(db, student_id, concept_id)
         status = mastery_to_status(mastery)
-        assessments.append(ConceptAssessment(concept_id=concept_id, status=status))
+        assessments.append(ConceptAssessment(concept_id=concept_id, status=status, mastery=mastery))
 
     return KnowledgeAssessmentResult(
         student_id=student_id,
