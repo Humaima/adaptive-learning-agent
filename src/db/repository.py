@@ -35,15 +35,16 @@ def set_mastery(db: Session, student_id: str, concept_id: str, mastery: float) -
     return record
 
 
-def get_mastery(db: Session, student_id: str, concept_id: str) -> float:
-    """Returns 0.0 (treated as 'unknown/not yet assessed') if no record exists."""
+def get_mastery(db: Session, student_id: str, concept_id: str) -> float | None:
+    """Returns None if the concept has never been assessed for this student —
+    distinct from an actual mastery score of 0.0."""
     student = get_or_create_student(db, student_id)
     record = (
         db.query(MasteryRecordDB)
         .filter_by(student_pk=student.id, concept_id=concept_id)
         .first()
     )
-    return float(cast(float, record.mastery)) if record else 0.0
+    return cast(float, record.mastery) if record else None
 
 
 def log_interaction(

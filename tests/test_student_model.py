@@ -27,8 +27,10 @@ def test_set_and_get_mastery(db_session):
     assert repo.get_mastery(db_session, "student_001", "calculus") == 0.75
 
 
-def test_unknown_concept_defaults_to_zero(db_session):
-    assert repo.get_mastery(db_session, "student_001", "never_seen") == 0.0
+def test_unknown_concept_returns_none(db_session):
+    """None (not 0.0) — 'never assessed' must stay distinguishable from a real 0.0 score,
+    since mastery_to_status() maps None -> UNKNOWN vs a float -> MASTERED/NOT_MASTERED."""
+    assert repo.get_mastery(db_session, "student_001", "never_seen") is None
 
 
 def test_log_interaction_appears_in_history(db_session):
