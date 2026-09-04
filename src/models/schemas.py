@@ -10,7 +10,8 @@ class MasteryStatus(str, Enum):
 
 class Concept(BaseModel):
     id: str = Field(..., description="Unique slug, e.g. 'backpropagation'")
-    name: str = Field(..., description="Human-readable name, e.g. 'Backpropagation'")
+    name: str = Field(..., description="Human-readable name")
+    domain: str = Field(default="", description="e.g. Math, CS, ML, Physics")
     description: str = Field(default="", description="Short explanation of the concept")
 
 

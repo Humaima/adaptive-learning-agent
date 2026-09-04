@@ -1,0 +1,296 @@
+{
+  "concepts": [
+    {
+      "id": "calculus_limits",
+      "name": "Limits in Calculus",
+      "domain": "Math",
+      "description": "Fundamental concept of approaching a value in calculus."
+    },
+    {
+      "id": "calculus_derivatives",
+      "name": "Derivatives",
+      "domain": "Math",
+      "description": "Rate of change of a function with respect to its variable."
+    },
+    {
+      "id": "calculus_integrals",
+      "name": "Integrals",
+      "domain": "Math",
+      "description": "Accumulation of quantities and area under curves."
+    },
+    {
+      "id": "linear_algebra_vectors",
+      "name": "Vectors",
+      "domain": "Math",
+      "description": "Objects with magnitude and direction used in many fields."
+    },
+    {
+      "id": "linear_algebra_matrices",
+      "name": "Matrices",
+      "domain": "Math",
+      "description": "Rectangular arrays representing linear transformations."
+    },
+    {
+      "id": "probability_basic",
+      "name": "Basic Probability",
+      "domain": "Math",
+      "description": "Foundations of random events and likelihood."
+    },
+    {
+      "id": "statistics_descriptive",
+      "name": "Descriptive Statistics",
+      "domain": "Math",
+      "description": "Techniques to summarize and describe data sets."
+    },
+    {
+      "id": "differential_equations",
+      "name": "Differential Equations",
+      "domain": "Math",
+      "description": "Equations involving derivatives that model dynamic systems."
+    },
+    {
+      "id": "programming_basics",
+      "name": "Programming Basics",
+      "domain": "CS",
+      "description": "Fundamental concepts of writing and executing code."
+    },
+    {
+      "id": "data_structures",
+      "name": "Data Structures",
+      "domain": "CS",
+      "description": "Organized ways to store and access data efficiently."
+    },
+    {
+      "id": "algorithms_sorting",
+      "name": "Sorting Algorithms",
+      "domain": "CS",
+      "description": "Methods to arrange data in a particular order."
+    },
+    {
+      "id": "algorithms_graph",
+      "name": "Graph Algorithms",
+      "domain": "CS",
+      "description": "Techniques for traversing and analyzing graph structures."
+    },
+    {
+      "id": "computer_architecture",
+      "name": "Computer Architecture",
+      "domain": "CS",
+      "description": "Design and organization of computer hardware components."
+    },
+    {
+      "id": "operating_systems",
+      "name": "Operating Systems",
+      "domain": "CS",
+      "description": "Software that manages hardware resources and provides services to programs."
+    },
+    {
+      "id": "databases_sql",
+      "name": "SQL Databases",
+      "domain": "CS",
+      "description": "Relational database management using Structured Query Language."
+    },
+    {
+      "id": "ml_intro",
+      "name": "Introduction to Machine Learning",
+      "domain": "ML",
+      "description": "Overview of algorithms that enable computers to learn from data."
+    },
+    {
+      "id": "supervised_learning",
+      "name": "Supervised Learning",
+      "domain": "ML",
+      "description": "Learning paradigm using labeled examples to predict outcomes."
+    },
+    {
+      "id": "linear_regression",
+      "name": "Linear Regression",
+      "domain": "ML",
+      "description": "Statistical method for modeling the relationship between variables."
+    },
+    {
+      "id": "neural_networks",
+      "name": "Neural Networks",
+      "domain": "ML",
+      "description": "Computational models inspired by biological neuron connections."
+    },
+    {
+      "id": "backpropagation",
+      "name": "Backpropagation",
+      "domain": "ML",
+      "description": "Algorithm for training neural networks by propagating errors backward."
+    },
+    {
+      "id": "convolutional_neural_networks",
+      "name": "Convolutional Neural Networks",
+      "domain": "ML",
+      "description": "Neural networks specialized for processing grid-like data such as images."
+    },
+    {
+      "id": "reinforcement_learning",
+      "name": "Reinforcement Learning",
+      "domain": "ML",
+      "description": "Learning framework where agents maximize cumulative reward through interaction."
+    },
+    {
+      "id": "classical_mechanics",
+      "name": "Classical Mechanics",
+      "domain": "Physics",
+      "description": "Study of motion of bodies under forces using Newtonian principles."
+    },
+    {
+      "id": "energy_conservation",
+      "name": "Energy Conservation",
+      "domain": "Physics",
+      "description": "Principle that total energy in an isolated system remains constant."
+    },
+    {
+      "id": "thermodynamics",
+      "name": "Thermodynamics",
+      "domain": "Physics",
+      "description": "Branch dealing with heat, work, and the laws governing energy transfer."
+    },
+    {
+      "id": "electromagnetism",
+      "name": "Electromagnetism",
+      "domain": "Physics",
+      "description": "Theory describing electric and magnetic fields and their interactions."
+    },
+    {
+      "id": "quantum_mechanics",
+      "name": "Quantum Mechanics",
+      "domain": "Physics",
+      "description": "Fundamental theory of physics at atomic and subatomic scales."
+    }
+  ],
+  "prerequisites": [
+    {
+      "prerequisite_id": "calculus_limits",
+      "concept_id": "calculus_derivatives"
+    },
+    {
+      "prerequisite_id": "calculus_derivatives",
+      "concept_id": "calculus_integrals"
+    },
+    {
+      "prerequisite_id": "linear_algebra_vectors",
+      "concept_id": "linear_algebra_matrices"
+    },
+    {
+      "prerequisite_id": "probability_basic",
+      "concept_id": "statistics_descriptive"
+    },
+    {
+      "prerequisite_id": "calculus_integrals",
+      "concept_id": "differential_equations"
+    },
+    {
+      "prerequisite_id": "linear_algebra_matrices",
+      "concept_id": "differential_equations"
+    },
+    {
+      "prerequisite_id": "programming_basics",
+      "concept_id": "data_structures"
+    },
+    {
+      "prerequisite_id": "data_structures",
+      "concept_id": "algorithms_sorting"
+    },
+    {
+      "prerequisite_id": "data_structures",
+      "concept_id": "algorithms_graph"
+    },
+    {
+      "prerequisite_id": "programming_basics",
+      "concept_id": "computer_architecture"
+    },
+    {
+      "prerequisite_id": "computer_architecture",
+      "concept_id": "operating_systems"
+    },
+    {
+      "prerequisite_id": "data_structures",
+      "concept_id": "databases_sql"
+    },
+    {
+      "prerequisite_id": "linear_algebra_vectors",
+      "concept_id": "ml_intro"
+    },
+    {
+      "prerequisite_id": "probability_basic",
+      "concept_id": "ml_intro"
+    },
+    {
+      "prerequisite_id": "ml_intro",
+      "concept_id": "supervised_learning"
+    },
+    {
+      "prerequisite_id": "supervised_learning",
+      "concept_id": "linear_regression"
+    },
+    {
+      "prerequisite_id": "linear_algebra_matrices",
+      "concept_id": "linear_regression"
+    },
+    {
+      "prerequisite_id": "calculus_derivatives",
+      "concept_id": "linear_regression"
+    },
+    {
+      "prerequisite_id": "supervised_learning",
+      "concept_id": "neural_networks"
+    },
+    {
+      "prerequisite_id": "linear_algebra_vectors",
+      "concept_id": "neural_networks"
+    },
+    {
+      "prerequisite_id": "neural_networks",
+      "concept_id": "backpropagation"
+    },
+    {
+      "prerequisite_id": "calculus_derivatives",
+      "concept_id": "backpropagation"
+    },
+    {
+      "prerequisite_id": "neural_networks",
+      "concept_id": "convolutional_neural_networks"
+    },
+    {
+      "prerequisite_id": "ml_intro",
+      "concept_id": "reinforcement_learning"
+    },
+    {
+      "prerequisite_id": "probability_basic",
+      "concept_id": "reinforcement_learning"
+    },
+    {
+      "prerequisite_id": "calculus_derivatives",
+      "concept_id": "classical_mechanics"
+    },
+    {
+      "prerequisite_id": "classical_mechanics",
+      "concept_id": "energy_conservation"
+    },
+    {
+      "prerequisite_id": "energy_conservation",
+      "concept_id": "thermodynamics"
+    },
+    {
+      "prerequisite_id": "calculus_integrals",
+      "concept_id": "electromagnetism"
+    },
+    {
+      "prerequisite_id": "linear_algebra_vectors",
+      "concept_id": "electromagnetism"
+    },
+    {
+      "prerequisite_id": "linear_algebra_matrices",
+      "concept_id": "quantum_mechanics"
+    },
+    {
+      "prerequisite_id": "differential_equations",
+      "concept_id": "quantum_mechanics"
+    }
+  ]
+}

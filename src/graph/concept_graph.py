@@ -14,7 +14,16 @@ class ConceptGraph:
         self.graph = nx.DiGraph()
 
     def add_concept(self, concept: Concept):
-        self.graph.add_node(concept.id, name=concept.name, description=concept.description)
+        self.graph.add_node(
+            concept.id, name=concept.name, domain=concept.domain, description=concept.description
+        )
+
+    def get_concepts_by_domain(self, domain: str) -> list[str]:
+        return [
+            node_id
+            for node_id, attrs in self.graph.nodes(data=True)
+            if attrs is not None and attrs.get("domain") == domain
+        ]
 
     def add_prerequisite(self, prerequisite_id: str, concept_id: str):
         """prerequisite_id must be learned before concept_id."""
@@ -49,8 +58,35 @@ class ConceptGraph:
         Path(path).write_text(json.dumps(data, indent=2))
 
     @classmethod
-    def from_json(cls, path: str) -> "ConceptGraph":
+    def from_dataset_json(cls, path: str, strict: bool = False) -> "ConceptGraph":
+        """
+        Loads a dataset shaped as:
+        {
+          "concepts": [{"id", "name", "domain", "description"}, ...],
+          "prerequisites": [{"prerequisite_id", "concept_id"}, ...]
+        }
+        Skips (or raises on, if strict=True) edges that are cyclic or reference unknown ids —
+        LLM-drafted datasets occasionally produce one or two of these.
+        """
         data = json.loads(Path(path).read_text())
-        instance = cls()
-        instance.graph = nx.node_link_graph(data)
-        return instance
+        cg = cls()
+
+        for c in data["concepts"]:
+            cg.add_concept(Concept(**c))
+
+        skipped = []
+        for edge in data["prerequisites"]:
+            prereq_id, concept_id = edge["prerequisite_id"], edge["concept_id"]
+            try:
+                cg.add_prerequisite(prereq_id, concept_id)
+            except ValueError as e:
+                skipped.append((prereq_id, concept_id, str(e)))
+
+        if skipped:
+            report = "\n".join(f"  {p} -> {c}: {err}" for p, c, err in skipped)
+            msg = f"Skipped {len(skipped)} invalid/cyclic edges:\n{report}"
+            if strict:
+                raise ValueError(msg)
+            print(f"[WARNING] {msg}")
+
+        return cg
