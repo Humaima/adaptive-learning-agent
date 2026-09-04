@@ -1,0 +1,54 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "name": "Linear Algebra",
+      "description": "Vectors, matrices, dot products, matrix multiplication.",
+      "id": "linear_algebra"
+    },
+    {
+      "name": "Calculus",
+      "description": "Derivatives, chain rule, partial derivatives.",
+      "id": "calculus"
+    },
+    {
+      "name": "Probability Basics",
+      "description": "Random variables, distributions, expectation.",
+      "id": "probability"
+    },
+    {
+      "name": "Neural Networks",
+      "description": "Layers, weights, activations, forward pass.",
+      "id": "neural_networks"
+    },
+    {
+      "name": "Backpropagation",
+      "description": "Computing gradients via the chain rule to update weights.",
+      "id": "backpropagation"
+    }
+  ],
+  "edges": [
+    {
+      "source": "linear_algebra",
+      "target": "neural_networks"
+    },
+    {
+      "source": "calculus",
+      "target": "neural_networks"
+    },
+    {
+      "source": "calculus",
+      "target": "backpropagation"
+    },
+    {
+      "source": "probability",
+      "target": "neural_networks"
+    },
+    {
+      "source": "neural_networks",
+      "target": "backpropagation"
+    }
+  ]
+}
