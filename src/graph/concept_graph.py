@@ -90,3 +90,14 @@ class ConceptGraph:
             print(f"[WARNING] {msg}")
 
         return cg
+
+    def get_concept_info(self, concept_id: str) -> dict:
+        """Returns {'name', 'domain', 'description'} for a single concept."""
+        if concept_id not in self.graph.nodes:
+            raise ValueError(f"Concept '{concept_id}' not found in graph.")
+        data = self.graph.nodes[concept_id]
+        return {
+            "name": data.get("name", concept_id),
+            "domain": data.get("domain", ""),
+            "description": data.get("description", ""),
+        }

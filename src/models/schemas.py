@@ -79,3 +79,28 @@ class DifficultyEstimate(BaseModel):
     )
     recommended_difficulty: DifficultyLevel
     rationale: str = Field(..., description="Plain-language reason for this decision")
+
+
+class TutorContentDraft(BaseModel):
+    explanation: str = Field(..., description="Clear explanation of the concept, matched to the requested difficulty")
+    key_points: list[str] = Field(..., description="3-5 short bullet-point takeaways")
+    worked_example: str = Field(..., description="One concrete worked example illustrating the concept")
+    transition_note: str = Field(
+        default="",
+        description="If this concept is being taught INSTEAD of what the student originally asked, "
+                    "one sentence bridging the two (e.g. why this comes first). "
+                    "Leave empty if this concept IS what the student asked about."
+    )
+
+
+class TutorResponse(BaseModel):
+    concept_id: str
+    concept_name: str
+    difficulty: DifficultyLevel
+    is_prerequisite_redirect: bool
+    target_concept_id: str          # what the student originally asked about
+    original_question: str
+    explanation: str
+    key_points: list[str]
+    worked_example: str
+    transition_note: str
