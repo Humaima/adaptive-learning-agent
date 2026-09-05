@@ -16,3 +16,6 @@ DEFAULT_DIFFICULTY_FOR_UNKNOWN = "easy"
 
 # Default difficulty to use when a concept has never been assessed (mastery = None)
 DEFAULT_DIFFICULTY_FOR_UNKNOWN = "easy"
+
+# Quiz generation settings
+NUM_QUIZ_QUESTIONS = 3

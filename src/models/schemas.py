@@ -104,3 +104,49 @@ class TutorResponse(BaseModel):
     key_points: list[str]
     worked_example: str
     transition_note: str
+
+
+class QuestionType(str, Enum):
+    MCQ = "mcq"
+    SHORT_ANSWER = "short_answer"
+
+
+class QuizOption(BaseModel):
+    label: str = Field(..., description="Option letter, e.g. 'A', 'B', 'C', 'D'")
+    text: str = Field(..., description="The option's text")
+
+
+class QuizQuestionDraft(BaseModel):
+    question_type: QuestionType
+    question_text: str
+    options: list[QuizOption] = Field(
+        default_factory=list,
+        description="Exactly 4 options for MCQ (labels A-D). Leave empty for short_answer."
+    )
+    correct_answer: str = Field(
+        ...,
+        description="For MCQ: the correct option's label (e.g. 'B'), matching one of the options exactly. "
+                    "For short_answer: a model/reference answer used for grading."
+    )
+    explanation: str = Field(..., description="Why this is the correct answer — shown to the student after grading")
+
+
+class QuizDraft(BaseModel):
+    questions: list[QuizQuestionDraft]
+
+
+class QuizQuestion(BaseModel):
+    question_id: str
+    concept_id: str
+    difficulty: DifficultyLevel
+    question_type: QuestionType
+    question_text: str
+    options: list[QuizOption]
+    correct_answer: str
+    explanation: str
+
+
+class QuizSet(BaseModel):
+    concept_id: str
+    difficulty: DifficultyLevel
+    questions: list[QuizQuestion]
