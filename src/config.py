@@ -23,3 +23,7 @@ NUM_QUIZ_QUESTIONS = 3
 # Short-answer grading: LLM returns a 0.0-1.0 correctness score.
 # At or above this threshold, the answer counts as "correct" for mastery-update purposes.
 SHORT_ANSWER_CORRECT_THRESHOLD = 0.7
+
+# Mastery update (EMA-style: blends prior belief with new evidence)
+MASTERY_LEARNING_RATE = 0.3    # how much weight new evidence gets vs. the existing score
+INITIAL_MASTERY_PRIOR = 0.5    # neutral starting point when a concept has never been assessed

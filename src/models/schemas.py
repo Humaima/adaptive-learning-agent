@@ -168,3 +168,19 @@ class EvaluationResult(BaseModel):
     is_correct: bool
     correctness_score: float = Field(ge=0.0, le=1.0)
     feedback: str
+
+
+class MasteryUpdate(BaseModel):
+    concept_id: str
+    previous_mastery: float | None
+    new_mastery: float
+    evidence_score: float
+
+
+class UpdateLoopResult(BaseModel):
+    student_id: str
+    original_question: str
+    target_concept_id: str
+    mastery_updates: list[MasteryUpdate]
+    ready_to_learn_target_now: bool
+    updated_assessment: KnowledgeAssessmentResult

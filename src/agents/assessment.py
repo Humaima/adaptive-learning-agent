@@ -62,13 +62,16 @@ def mastery_to_status(mastery: float | None) -> MasteryStatus:
     return MasteryStatus.NOT_MASTERED
 
 
-def assess_knowledge(
-    db: Session, student_id: str, question: str, cg: ConceptGraph
+def build_assessment_for_target(
+    db: Session, student_id: str, original_question: str, target_id: str, cg: ConceptGraph
 ) -> KnowledgeAssessmentResult:
-    identification = identify_target_concept(question, cg)
-    target_id = identification.target_concept_id
-
-    learning_path = cg.get_learning_path(target_id)  # prerequisites (ordered) + target
+    """
+    Builds the assessment map for an ALREADY-KNOWN target concept — no LLM call.
+    Used both by assess_knowledge() below (fresh question) and by the update loop
+    (Phase 8), which re-checks readiness after mastery changes without re-identifying
+    the target concept every time.
+    """
+    learning_path = cg.get_learning_path(target_id)
 
     assessments = []
     for concept_id in learning_path:
@@ -78,8 +81,16 @@ def assess_knowledge(
 
     return KnowledgeAssessmentResult(
         student_id=student_id,
-        original_question=question,
+        original_question=original_question,
         target_concept_id=target_id,
         learning_path=learning_path,
         assessments=assessments,
     )
+
+
+def assess_knowledge(
+    db: Session, student_id: str, question: str, cg: ConceptGraph
+) -> KnowledgeAssessmentResult:
+    """Fresh question -> identify target via LLM, then build the assessment map."""
+    identification = identify_target_concept(question, cg)
+    return build_assessment_for_target(db, student_id, question, identification.target_concept_id, cg)
