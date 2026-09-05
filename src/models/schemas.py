@@ -150,3 +150,21 @@ class QuizSet(BaseModel):
     concept_id: str
     difficulty: DifficultyLevel
     questions: list[QuizQuestion]
+
+
+class ShortAnswerGradingDraft(BaseModel):
+    correctness_score: float = Field(
+        ..., ge=0.0, le=1.0,
+        description="0.0 = completely wrong, 1.0 = fully correct, values in between for partial credit"
+    )
+    feedback: str = Field(..., description="One or two sentences of feedback shown to the student")
+
+
+class EvaluationResult(BaseModel):
+    question_id: str
+    concept_id: str
+    question_type: QuestionType
+    student_answer: str
+    is_correct: bool
+    correctness_score: float = Field(ge=0.0, le=1.0)
+    feedback: str

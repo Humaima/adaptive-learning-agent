@@ -19,3 +19,7 @@ DEFAULT_DIFFICULTY_FOR_UNKNOWN = "easy"
 
 # Quiz generation settings
 NUM_QUIZ_QUESTIONS = 3
+
+# Short-answer grading: LLM returns a 0.0-1.0 correctness score.
+# At or above this threshold, the answer counts as "correct" for mastery-update purposes.
+SHORT_ANSWER_CORRECT_THRESHOLD = 0.7
