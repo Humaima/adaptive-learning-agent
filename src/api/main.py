@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from langgraph.types import Command
 from langgraph.checkpoint.sqlite import SqliteSaver
@@ -14,6 +14,8 @@ from src.api.schemas import (
     AskRequest, AnswerRequest, TutorTurnResponse, QuizOut, QuizOptionOut, QuizQuestionOut,
     TutoringStepOut, StudentMasteryResponse, MasteryEntry, ConceptOut,
 )
+from src.api.auth_routes import router as auth_router
+from src.auth.dependencies import get_current_student_id
 
 # Built once at startup — shared across all requests. Cheap/pure, no I/O beyond the JSON read.
 cg = ConceptGraph.from_dataset_json("data/concepts_dataset.json")
@@ -30,6 +32,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Adaptive Learning Agent API", lifespan=lifespan)
 
+app.include_router(auth_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],  # Vite's default dev server port
@@ -79,17 +82,17 @@ def _result_to_response(result: dict) -> TutorTurnResponse:
 
 
 @app.post("/ask", response_model=TutorTurnResponse)
-def ask(request: Request, body: AskRequest):
-    config = _thread_config(body.student_id)
+def ask(request: Request, body: AskRequest, student_id: str = Depends(get_current_student_id)):
+    config = _thread_config(student_id)
     result = request.app.state.graph.invoke(
-        {"student_id": body.student_id, "original_question": body.question}, config=config
+        {"student_id": student_id, "original_question": body.question}, config=config
     )
     return _result_to_response(result)
 
 
 @app.post("/answer", response_model=TutorTurnResponse)
-def answer(request: Request, body: AnswerRequest):
-    config = _thread_config(body.student_id)
+def answer(request: Request, body: AnswerRequest, student_id: str = Depends(get_current_student_id)):
+    config = _thread_config(student_id)
     try:
         result = request.app.state.graph.invoke(Command(resume=body.answers), config=config)
     except Exception as e:
@@ -97,8 +100,8 @@ def answer(request: Request, body: AnswerRequest):
     return _result_to_response(result)
 
 
-@app.get("/student/{student_id}/mastery", response_model=StudentMasteryResponse)
-def student_mastery(student_id: str):
+@app.get("/student/me/mastery", response_model=StudentMasteryResponse)
+def student_mastery(student_id: str = Depends(get_current_student_id)):
     db = SessionLocal()
     try:
         model = get_student_model(db, student_id)
@@ -106,7 +109,7 @@ def student_mastery(student_id: str):
         db.close()
 
     entries = []
-    student_mastery_map = (model.mastery or {}) if model is not None else {}
+    student_mastery_map = model.mastery or {}
     for concept_id, data in cg.graph.nodes(data=True):
         node_data = data or {}
         entries.append(MasteryEntry(

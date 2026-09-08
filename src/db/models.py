@@ -7,9 +7,10 @@ from src.db.database import Base
 
 class StudentDB(Base):
     __tablename__ = "students"
-
     id = Column(Integer, primary_key=True, index=True)
-    student_id = Column(String, unique=True, index=True, nullable=False)
+    student_id = Column(String, unique=True, index=True, nullable=False)  # == username
+    email = Column(String, unique=True, index=True, nullable=True)
+    hashed_password = Column(String, nullable=True)  # nullable so old test fixtures without auth still work
     created_at = Column(DateTime, default=datetime.utcnow)
 
     mastery_records = relationship("MasteryRecordDB", back_populates="student", cascade="all, delete-orphan")

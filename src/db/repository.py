@@ -77,3 +77,15 @@ def get_student_model(db: Session, student_id: str) -> StudentModel:
     history = [Interaction.model_validate(i) for i in student.interactions]
 
     return StudentModel(student_id=cast(str, student.student_id), mastery=mastery, history=history)
+
+
+def get_student_by_username(db: Session, username: str) -> StudentDB | None:
+    return db.query(StudentDB).filter_by(student_id=username).first()
+
+
+def create_student_with_password(db: Session, username: str, email: str, hashed_password: str) -> StudentDB:
+    student = StudentDB(student_id=username, email=email, hashed_password=hashed_password)
+    db.add(student)
+    db.commit()
+    db.refresh(student)
+    return student

@@ -2,13 +2,10 @@ from pydantic import BaseModel
 
 
 class AskRequest(BaseModel):
-    student_id: str
     question: str
 
-
 class AnswerRequest(BaseModel):
-    student_id: str
-    answers: dict[str, str]   # question_id -> answer text/label
+    answers: dict[str, str]  # question_id -> answer text/label
 
 
 class QuizOptionOut(BaseModel):

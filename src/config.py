@@ -32,3 +32,6 @@ INITIAL_MASTERY_PRIOR = 0.5    # neutral starting point when a concept has never
 # Safety Cap: max teach->quiz->evaluate->update cycles per question,
 # in case of a misbehaving concept graph or LLM drift causing an unexpected loop.
 MAX_LOOP_ITERATIONS = 5
+
+JWT_ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 1 day
