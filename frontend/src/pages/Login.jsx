@@ -13,8 +13,9 @@ export default function Login() {
     try {
       await login(username, password)
       navigate('/')
-    } catch {
-      setError('Incorrect username or password.')
+    } catch (err) {
+      const message = err.response?.data?.detail || err.response?.data?.error
+      setError(message || 'Something went wrong. Please try again.')
     }
   }
 

@@ -12,11 +12,14 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const data = await register(username, email, password)
-      localStorage.setItem('access_token', data.access_token)
+      await register(username, email, password)
       navigate('/')
-    } catch {
-      setError('That username may already be taken.')
+    } catch (err) {
+      // FastAPI's own errors use {detail: "..."}; slowapi's rate-limit handler
+      // uses a differently-shaped {error: "..."} — check both rather than
+      // showing one hardcoded guess for every possible failure.
+      const message = err.response?.data?.detail || err.response?.data?.error
+      setError(message || 'Something went wrong. Please try again.')
     }
   }
 

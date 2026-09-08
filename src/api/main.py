@@ -58,7 +58,7 @@ app = FastAPI(title="Adaptive Learning Agent API", lifespan=lifespan)
 app.include_router(auth_router)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Vite's default dev server port
+    allow_origins=["http://localhost:5173", "https://adaptive-learning-agent-lake.vercel.app/"],  # Vite dev + prod
     allow_methods=["*"],
     allow_headers=["*"],
 )
