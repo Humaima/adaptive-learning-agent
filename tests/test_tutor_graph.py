@@ -83,7 +83,7 @@ def test_single_iteration_when_only_target_is_unmastered(db_session, sample_grap
              target_concept_id="backpropagation", mastery_updates=[],
              ready_to_learn_target_now=True, updated_assessment=mastered_assessment)):
 
-        graph = build_tutor_graph(db_session, sample_graph)
+        graph = build_tutor_graph(sample_graph)
         config: RunnableConfig = {"configurable": {"thread_id": "test-thread-1"}}
 
         result = graph.invoke(
@@ -127,7 +127,7 @@ def test_safety_cap_stops_infinite_loop(db_session, sample_graph):
              target_concept_id="backpropagation", mastery_updates=[],
              ready_to_learn_target_now=False, updated_assessment=stuck_assessment)):  # never improves
 
-        graph = build_tutor_graph(db_session, sample_graph)
+        graph = build_tutor_graph(sample_graph)
         config: RunnableConfig = {"configurable": {"thread_id": "test-thread-2"}}
 
         result = graph.invoke(

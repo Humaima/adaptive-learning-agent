@@ -1,4 +1,3 @@
-from sqlalchemy.orm import Session
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
 
@@ -7,13 +6,15 @@ from src.agents.graph_state import TutorGraphState
 from src.agents.graph_nodes import build_nodes, route_after_update
 
 
-def build_tutor_graph(db: Session, cg: ConceptGraph):
+def build_tutor_graph(cg: ConceptGraph):
     """
     Builds and compiles the full adaptive-tutor LangGraph.
     A checkpointer is required — without it, interrupt()/resume can't work,
     since there'd be nowhere to save the paused state.
+    Each node opens its own DB session per call (see graph_nodes.py) — safe
+    across many HTTP requests hitting the same long-lived compiled graph.
     """
-    nodes = build_nodes(db, cg)
+    nodes = build_nodes(cg)
     graph_builder = StateGraph(TutorGraphState)
 
     for name, fn in nodes.items():

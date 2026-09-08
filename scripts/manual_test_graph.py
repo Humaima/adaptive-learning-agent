@@ -12,7 +12,7 @@ cg = ConceptGraph.from_dataset_json("data/concepts_dataset.json")
 set_mastery(db, "student_001", "linear_algebra", 0.9)
 set_mastery(db, "student_001", "calculus", 0.2)  # weak -> expect a redirect + looping
 
-graph = build_tutor_graph(db, cg)
+graph = build_tutor_graph(cg)
 
 # Every run needs a thread_id — this is how the checkpointer knows which
 # paused conversation to resume later. Use the same one throughout this session.
@@ -35,7 +35,7 @@ while "__interrupt__" in result:
         for opt in q["options"]:
             print(f"      {opt['label']}. {opt['text']}")
         # Simulate a student answering — in a real app this comes from the UI/API instead.
-        fake_answers[q["question_id"]] = opt["label"] if q["options"] else "a reasonable guess"
+        fake_answers[q["question_id"]] = q["options"][-1]["label"] if q["options"] else "a reasonable guess"
 
     result = graph.invoke(Command(resume=fake_answers), config=config)
 
