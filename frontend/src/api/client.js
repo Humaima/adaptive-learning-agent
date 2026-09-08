@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const client = axios.create({ baseURL: 'http://localhost:8000' })
+const client = axios.create({ baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000' })
 
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token')
@@ -8,23 +8,42 @@ client.interceptors.request.use((config) => {
   return config
 })
 
-// A stored token can go stale (expired, or signed before a server restart) without
-// isLoggedIn() (which only checks presence, not validity) ever noticing. Catch that
-// here so a stale-token request fails visibly as "please log in again" instead of a
-// silent 401 the user has no way to recover from.
+let isRefreshing = false
+
 client.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401 && window.location.pathname !== '/login') {
-      localStorage.removeItem('access_token')
-      window.location.href = '/login'
+  async (error) => {
+    const originalRequest = error.config
+    if (error.response?.status === 401 && !originalRequest._retry && !isRefreshing) {
+      originalRequest._retry = true
+      isRefreshing = true
+      try {
+        const refreshToken = localStorage.getItem('refresh_token')
+        const { data } = await axios.post(`${client.defaults.baseURL}/auth/refresh`, { refresh_token: refreshToken })
+        localStorage.setItem('access_token', data.access_token)
+        localStorage.setItem('refresh_token', data.refresh_token)
+        originalRequest.headers.Authorization = `Bearer ${data.access_token}`
+        return client(originalRequest)
+      } catch {
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('refresh_token')
+        window.location.href = '/login'
+      } finally {
+        isRefreshing = false
+      }
     }
     return Promise.reject(error)
   }
 )
 
+const storeTokens = (data) => {
+  localStorage.setItem('access_token', data.access_token)
+  localStorage.setItem('refresh_token', data.refresh_token)
+  return data
+}
+
 export const register = (username, email, password) =>
-  client.post('/auth/register', { username, email, password }).then(r => r.data)
+  client.post('/auth/register', { username, email, password }).then(r => storeTokens(r.data))
 
 export const login = async (username, password) => {
   const form = new URLSearchParams()
@@ -33,16 +52,17 @@ export const login = async (username, password) => {
   const { data } = await client.post('/auth/login', form, {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   })
-  localStorage.setItem('access_token', data.access_token)
-  return data
+  return storeTokens(data)
 }
 
-export const getLearningPath = () => client.get('/student/me/learning-path').then(r => r.data)
-
-export const logout = () => localStorage.removeItem('access_token')
+export const logout = () => {
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+}
 export const isLoggedIn = () => !!localStorage.getItem('access_token')
 
 export const askAgent = (question) => client.post('/ask', { question }).then(r => r.data)
 export const answerQuiz = (answers) => client.post('/answer', { answers }).then(r => r.data)
 export const getMastery = () => client.get('/student/me/mastery').then(r => r.data)
 export const getConcepts = () => client.get('/concepts').then(r => r.data)
+export const getLearningPath = () => client.get('/student/me/learning-path').then(r => r.data)
