@@ -6,14 +6,9 @@ from src.agents.graph_state import TutorGraphState
 from src.agents.graph_nodes import build_nodes, route_after_update
 
 
-def build_tutor_graph(cg: ConceptGraph):
-    """
-    Builds and compiles the full adaptive-tutor LangGraph.
-    A checkpointer is required — without it, interrupt()/resume can't work,
-    since there'd be nowhere to save the paused state.
-    Each node opens its own DB session per call (see graph_nodes.py) — safe
-    across many HTTP requests hitting the same long-lived compiled graph.
-    """
+def build_tutor_graph(cg: ConceptGraph, checkpointer=None):
+    """checkpointer defaults to an in-memory one (fine for scripts/tests).
+    The API server passes in a persistent SqliteSaver instead."""
     nodes = build_nodes(cg)
     graph_builder = StateGraph(TutorGraphState)
 
@@ -27,12 +22,6 @@ def build_tutor_graph(cg: ConceptGraph):
     graph_builder.add_edge("quiz", "collect_answers")
     graph_builder.add_edge("collect_answers", "evaluate")
     graph_builder.add_edge("evaluate", "update")
+    graph_builder.add_conditional_edges("update", route_after_update, {"continue": "difficulty", "done": END})
 
-    graph_builder.add_conditional_edges(
-        "update",
-        route_after_update,
-        {"continue": "difficulty", "done": END},
-    )
-
-    checkpointer = MemorySaver()  # in-memory only — swap for a persistent one in Phase 10 if needed
-    return graph_builder.compile(checkpointer=checkpointer)
+    return graph_builder.compile(checkpointer=checkpointer or MemorySaver())

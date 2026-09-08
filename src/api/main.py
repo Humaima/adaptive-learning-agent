@@ -1,6 +1,9 @@
-from fastapi import FastAPI, HTTPException
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from langgraph.types import Command
+from langgraph.checkpoint.sqlite import SqliteSaver
 from langchain_core.runnables import RunnableConfig
 
 from src.graph.concept_graph import ConceptGraph
@@ -12,7 +15,20 @@ from src.api.schemas import (
     TutoringStepOut, StudentMasteryResponse, MasteryEntry, ConceptOut,
 )
 
-app = FastAPI(title="Adaptive Learning Agent API")
+# Built once at startup — shared across all requests. Cheap/pure, no I/O beyond the JSON read.
+cg = ConceptGraph.from_dataset_json("data/concepts_dataset.json")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    with SqliteSaver.from_conn_string("data/checkpoints.sqlite") as checkpointer:
+        checkpointer.setup()  # creates the checkpoint tables on first run — no-op if they already exist
+        app.state.graph = build_tutor_graph(cg, checkpointer)
+        yield
+    # connection closes automatically when the `with` block exits (server shutdown)
+
+
+app = FastAPI(title="Adaptive Learning Agent API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,10 +36,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Built once at startup — shared across all requests.
-cg = ConceptGraph.from_dataset_json("data/concepts_dataset.json")
-graph = build_tutor_graph(cg)
 
 
 def _thread_config(student_id: str) -> RunnableConfig:
@@ -67,19 +79,19 @@ def _result_to_response(result: dict) -> TutorTurnResponse:
 
 
 @app.post("/ask", response_model=TutorTurnResponse)
-def ask(request: AskRequest):
-    config = _thread_config(request.student_id)
-    result = graph.invoke(
-        {"student_id": request.student_id, "original_question": request.question}, config=config
+def ask(request: Request, body: AskRequest):
+    config = _thread_config(body.student_id)
+    result = request.app.state.graph.invoke(
+        {"student_id": body.student_id, "original_question": body.question}, config=config
     )
     return _result_to_response(result)
 
 
 @app.post("/answer", response_model=TutorTurnResponse)
-def answer(request: AnswerRequest):
-    config = _thread_config(request.student_id)
+def answer(request: Request, body: AnswerRequest):
+    config = _thread_config(body.student_id)
     try:
-        result = graph.invoke(Command(resume=request.answers), config=config)
+        result = request.app.state.graph.invoke(Command(resume=body.answers), config=config)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"No active session to resume: {e}")
     return _result_to_response(result)
