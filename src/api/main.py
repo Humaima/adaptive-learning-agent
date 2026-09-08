@@ -10,7 +10,8 @@ from langchain_core.runnables import RunnableConfig
 
 from src.graph.concept_graph import ConceptGraph
 from src.agents.tutor_graph import build_tutor_graph
-from src.db.database import SessionLocal
+from src.db.database import SessionLocal, engine, Base
+from src.db import models  # noqa: F401 — ensures models are registered on Base before create_all
 from src.db.repository import get_student_model
 from src.api.schemas import (
     AskRequest, AnswerRequest, TutorTurnResponse, QuizOut, QuizOptionOut, QuizQuestionOut,
@@ -40,6 +41,13 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Idempotent — only creates tables that don't already exist, never touches
+    # existing ones. Without this, a fresh database (e.g. a newly provisioned
+    # Render Postgres instance nobody has run init_db against yet) has no
+    # students/mastery_records/interactions tables, and every DB-touching
+    # endpoint (register, login, ...) fails with an unhandled 500.
+    Base.metadata.create_all(bind=engine)
+
     if DATABASE_URL:
         with PostgresSaver.from_conn_string(DATABASE_URL) as checkpointer:
             checkpointer.setup()  # creates the checkpoint tables on first run — no-op if they already exist
@@ -58,7 +66,7 @@ app = FastAPI(title="Adaptive Learning Agent API", lifespan=lifespan)
 app.include_router(auth_router)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://adaptive-learning-agent-lake.vercel.app/"],  # Vite dev + prod
+    allow_origins=["http://localhost:5173", "https://adaptive-learning-agent-lake.vercel.app"],  # Vite dev + prod
     allow_methods=["*"],
     allow_headers=["*"],
 )
