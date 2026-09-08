@@ -1,9 +1,11 @@
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from langgraph.types import Command
 from langgraph.checkpoint.sqlite import SqliteSaver
+from langgraph.checkpoint.postgres import PostgresSaver
 from langchain_core.runnables import RunnableConfig
 
 from src.graph.concept_graph import ConceptGraph
@@ -30,13 +32,24 @@ _MINUTES_BY_DOMAIN = {"Math": 15, "CS": 20, "ML": 25, "Physics": 20}
 # Built once at startup — shared across all requests. Cheap/pure, no I/O beyond the JSON read.
 cg = ConceptGraph.from_dataset_json("data/concepts_dataset.json")
 
+# docker-compose sets DATABASE_URL to the Postgres service (same URL src/db/database.py
+# uses for the student model) so checkpoints persist there too; local (non-Docker) dev
+# without DATABASE_URL set falls back to a SQLite file, same as before.
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    with SqliteSaver.from_conn_string("data/checkpoints.sqlite") as checkpointer:
-        checkpointer.setup()  # creates the checkpoint tables on first run — no-op if they already exist
-        app.state.graph = build_tutor_graph(cg, checkpointer)
-        yield
+    if DATABASE_URL:
+        with PostgresSaver.from_conn_string(DATABASE_URL) as checkpointer:
+            checkpointer.setup()  # creates the checkpoint tables on first run — no-op if they already exist
+            app.state.graph = build_tutor_graph(cg, checkpointer)
+            yield
+    else:
+        with SqliteSaver.from_conn_string("data/checkpoints.sqlite") as checkpointer:
+            checkpointer.setup()
+            app.state.graph = build_tutor_graph(cg, checkpointer)
+            yield
     # connection closes automatically when the `with` block exits (server shutdown)
 
 
