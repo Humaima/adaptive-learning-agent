@@ -18,6 +18,12 @@ from src.api.auth_routes import router as auth_router
 from src.auth.dependencies import get_current_student_id
 from src.config import MASTERY_THRESHOLD
 
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+
+from src.api.rate_limit import limiter
+
 # Rough estimate — could later be derived from actual quiz/tutoring time logs
 _MINUTES_BY_DOMAIN = {"Math": 15, "CS": 20, "ML": 25, "Physics": 20}
 
@@ -43,6 +49,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.state.limiter = limiter
+# slowapi's handler is (correctly) typed for the specific RateLimitExceeded it's
+# registered for, but Starlette's add_exception_handler expects a handler generic
+# over any Exception — a stub-strictness mismatch, not a real bug; this is
+# slowapi's own documented usage pattern.
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # pyright: ignore[reportArgumentType]
+app.add_middleware(SlowAPIMiddleware)
 
 
 def _thread_config(student_id: str) -> RunnableConfig:
@@ -86,6 +100,7 @@ def _result_to_response(result: dict) -> TutorTurnResponse:
 
 
 @app.post("/ask", response_model=TutorTurnResponse)
+@limiter.limit("15/minute")
 def ask(request: Request, body: AskRequest, student_id: str = Depends(get_current_student_id)):
     config = _thread_config(student_id)
     result = request.app.state.graph.invoke(
@@ -95,6 +110,7 @@ def ask(request: Request, body: AskRequest, student_id: str = Depends(get_curren
 
 
 @app.post("/answer", response_model=TutorTurnResponse)
+@limiter.limit("30/minute")
 def answer(request: Request, body: AnswerRequest, student_id: str = Depends(get_current_student_id)):
     config = _thread_config(student_id)
     try:
