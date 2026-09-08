@@ -27,3 +27,8 @@ SHORT_ANSWER_CORRECT_THRESHOLD = 0.7
 # Mastery update (EMA-style: blends prior belief with new evidence)
 MASTERY_LEARNING_RATE = 0.3    # how much weight new evidence gets vs. the existing score
 INITIAL_MASTERY_PRIOR = 0.5    # neutral starting point when a concept has never been assessed
+
+
+# Safety Cap: max teach->quiz->evaluate->update cycles per question,
+# in case of a misbehaving concept graph or LLM drift causing an unexpected loop.
+MAX_LOOP_ITERATIONS = 5

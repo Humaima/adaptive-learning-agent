@@ -45,6 +45,8 @@ def test_update_loop_flips_readiness_after_enough_correct_answers(db_session, sa
 
     assert result.ready_to_learn_target_now is True  # calculus mastery cleared threshold
     calculus_update = next(u for u in result.mastery_updates if u.concept_id == "calculus")
+    assert calculus_update.previous_mastery is not None
+    assert calculus_update.new_mastery is not None
     assert calculus_update.new_mastery > calculus_update.previous_mastery
 
 
