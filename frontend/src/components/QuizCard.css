@@ -16,3 +16,9 @@
   border-radius: var(--radius-pill); font-weight: 600; cursor: pointer; margin-top: 8px;
 }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.follow-up-chip {
+  background: var(--mint-soft); border: none; border-radius: 999px; padding: 6px 14px;
+  font-size: 0.8rem; cursor: pointer; color: var(--ink);
+}
+.follow-up-chip:hover { background: var(--mint); }

@@ -1,0 +1,20 @@
+.notebook-spread {
+  display: flex;
+  background: var(--paper);
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(30, 42, 69, 0.18);
+  overflow: hidden;
+  min-height: 560px;
+  position: relative;
+  margin-top: 24px;
+}
+.notebook-page { flex: 1; padding: 36px; position: relative; }
+.notebook-spine {
+  width: 2px;
+  background: linear-gradient(180deg, transparent, rgba(30,42,69,0.15) 20%, rgba(30,42,69,0.15) 80%, transparent);
+  box-shadow: -6px 0 12px rgba(30,42,69,0.05), 6px 0 12px rgba(30,42,69,0.05);
+}
+@media (max-width: 900px) {
+  .notebook-spread { flex-direction: column; }
+  .notebook-spine { width: auto; height: 2px; }
+}

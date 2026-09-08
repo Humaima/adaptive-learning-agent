@@ -12,3 +12,12 @@
   background: var(--coral-soft); color: var(--coral); font-weight: 600;
   padding: 6px 14px; border-radius: var(--radius-pill); display: flex; gap: 6px; align-items: center;
 }
+
+.navbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 20px; margin: 16px 24px 0;
+  background: white; border-radius: 999px; box-shadow: 0 8px 24px rgba(30,42,69,0.08);
+}
+.navbar-links { display: flex; gap: 4px; background: var(--paper); padding: 4px; border-radius: 999px; }
+.navbar-links a { padding: 8px 18px; border-radius: 999px; font-size: 0.9rem; }
+.navbar-links a.active { background: var(--ink); color: var(--paper); }

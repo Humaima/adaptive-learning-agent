@@ -1,0 +1,5 @@
+/* add to tokens.css or a new file */
+.mini-widget { background: white; border-radius: 16px; padding: 16px; border: 1px solid #EFEBE0; }
+.mini-widget-title { font-size: 0.8rem; font-weight: 600; display: flex; justify-content: space-between; color: var(--ink-soft); }
+.mini-widget-title span { color: var(--coral); font-weight: 500; cursor: pointer; }
+.mini-widget-line { font-size: 0.85rem; margin-top: 6px; }
