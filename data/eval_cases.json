@@ -1,0 +1,50 @@
+[
+  {
+    "id": "eval_001",
+    "question": "Explain backpropagation.",
+    "expected_target_concept_id": "backpropagation",
+    "mastery_setup": { "linear_algebra_vectors": 0.9, "calculus_limits": 0.2 },
+    "expected_teach_next": "calculus_limits"
+  },
+  {
+    "id": "eval_002",
+    "question": "How does gradient descent actually update the weights?",
+    "expected_target_concept_id": "backpropagation",
+    "mastery_setup": {
+      "calculus_limits": 0.9,
+      "probability_basic": 0.9,
+      "linear_algebra_vectors": 0.9,
+      "calculus_derivatives": 0.9,
+      "ml_intro": 0.9,
+      "supervised_learning": 0.9,
+      "neural_networks": 0.9
+    },
+    "expected_teach_next": "backpropagation"
+  },
+  {
+    "id": "eval_003",
+    "question": "What's the difference between a derivative and a partial derivative?",
+    "expected_target_concept_id": "calculus_derivatives",
+    "mastery_setup": {},
+    "expected_teach_next": "calculus_limits"
+  },
+  {
+    "id": "eval_004",
+    "question": "I don't get how matrices multiply.",
+    "expected_target_concept_id": "linear_algebra_matrices",
+    "mastery_setup": {},
+    "expected_teach_next": "linear_algebra_vectors"
+  },
+  {
+    "id": "eval_005",
+    "question": "Can you walk me through how a neural network makes a prediction, layer by layer?",
+    "expected_target_concept_id": "neural_networks",
+    "mastery_setup": {
+      "probability_basic": 0.9,
+      "linear_algebra_vectors": 0.2,
+      "ml_intro": 0.9,
+      "supervised_learning": 0.9
+    },
+    "expected_teach_next": "linear_algebra_vectors"
+  }
+]

@@ -1,0 +1,69 @@
+{
+  "total_cases": 5,
+  "target_identification_accuracy": 1.0,
+  "teach_next_accuracy": 1.0,
+  "average_latency_seconds": 1.16,
+  "failures": [],
+  "all_results": [
+    {
+      "id": "eval_001",
+      "question": "Explain backpropagation.",
+      "expected_target": "backpropagation",
+      "actual_target": "backpropagation",
+      "target_correct": true,
+      "expected_teach_next": "calculus_limits",
+      "actual_teach_next": "calculus_limits",
+      "teach_next_correct": true,
+      "latency_seconds": 1.18,
+      "error": null
+    },
+    {
+      "id": "eval_002",
+      "question": "How does gradient descent actually update the weights?",
+      "expected_target": "backpropagation",
+      "actual_target": "backpropagation",
+      "target_correct": true,
+      "expected_teach_next": "backpropagation",
+      "actual_teach_next": "backpropagation",
+      "teach_next_correct": true,
+      "latency_seconds": 1.38,
+      "error": null
+    },
+    {
+      "id": "eval_003",
+      "question": "What's the difference between a derivative and a partial derivative?",
+      "expected_target": "calculus_derivatives",
+      "actual_target": "calculus_derivatives",
+      "target_correct": true,
+      "expected_teach_next": "calculus_limits",
+      "actual_teach_next": "calculus_limits",
+      "teach_next_correct": true,
+      "latency_seconds": 1.04,
+      "error": null
+    },
+    {
+      "id": "eval_004",
+      "question": "I don't get how matrices multiply.",
+      "expected_target": "linear_algebra_matrices",
+      "actual_target": "linear_algebra_matrices",
+      "target_correct": true,
+      "expected_teach_next": "linear_algebra_vectors",
+      "actual_teach_next": "linear_algebra_vectors",
+      "teach_next_correct": true,
+      "latency_seconds": 1.07,
+      "error": null
+    },
+    {
+      "id": "eval_005",
+      "question": "Can you walk me through how a neural network makes a prediction, layer by layer?",
+      "expected_target": "neural_networks",
+      "actual_target": "neural_networks",
+      "target_correct": true,
+      "expected_teach_next": "linear_algebra_vectors",
+      "actual_teach_next": "linear_algebra_vectors",
+      "teach_next_correct": true,
+      "latency_seconds": 1.11,
+      "error": null
+    }
+  ]
+}
