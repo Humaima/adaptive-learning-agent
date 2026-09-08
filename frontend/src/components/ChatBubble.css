@@ -1,0 +1,4 @@
+/* src/components/ChatBubble.css */
+.chat-bubble { max-width: 75%; padding: 14px 18px; border-radius: 18px; margin: 10px 0; line-height: 1.5; }
+.chat-bubble.student { background: var(--coral-soft); margin-left: auto; border-bottom-right-radius: 4px; }
+.chat-bubble.agent { background: var(--lavender-soft); margin-right: auto; border-bottom-left-radius: 4px; }

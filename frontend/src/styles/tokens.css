@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --paper: #FBF6EC;
+  --paper-shadow: rgba(30, 42, 69, 0.08);
+  --ink: #1E2A45;
+  --ink-soft: #5B6478;
+  --coral: #FF7A93;
+  --coral-soft: #FFE3E9;
+  --mint: #7FD8C4;
+  --mint-soft: #E3F8F3;
+  --lavender: #B9AEF0;
+  --lavender-soft: #EFEBFC;
+  --gold: #FFC857;
+
+  --radius-page: 24px;
+  --radius-card: 16px;
+  --radius-pill: 999px;
+
+  --font-display: 'Fredoka', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #EFE9FB 0%, #FBF6EC 40%);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0;
+}
+
+.paper-panel {
+  background: var(--paper);
+  border-radius: var(--radius-page);
+  box-shadow: 0 12px 32px var(--paper-shadow);
+  position: relative;
+}
+
+/* A small rotated "washi tape" strip used as a corner accent on key panels */
+.washi-tape {
+  position: absolute;
+  top: -10px;
+  left: 32px;
+  width: 64px;
+  height: 22px;
+  background: var(--gold);
+  opacity: 0.85;
+  transform: rotate(-4deg);
+  border-radius: 3px;
+}
+
+.pill-label {
+  display: inline-block;
+  background: var(--lavender-soft);
+  color: var(--ink);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+}
