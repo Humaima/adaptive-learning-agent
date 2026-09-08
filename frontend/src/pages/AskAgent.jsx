@@ -5,8 +5,6 @@ import QuizCard from '../components/QuizCard.jsx'
 import '../components/ChatBubble.css'
 import '../components/QuizCard.css'
 
-const STUDENT_ID = 'student_001' // replace with real auth/session later
-
 export default function AskAgent() {
   const [question, setQuestion] = useState('')
   const [messages, setMessages] = useState([]) // {role, text}
@@ -27,7 +25,7 @@ export default function AskAgent() {
     setMessages(prev => [...prev, { role: 'student', text: question }])
     setLoading(true)
     try {
-      const result = await askAgent(STUDENT_ID, question)
+      const result = await askAgent(question)
       pushTeachingSteps(result)
       setActiveQuiz(result.status === 'awaiting_answers' ? result.quiz : null)
     } finally {
@@ -39,7 +37,7 @@ export default function AskAgent() {
   const handleQuizSubmit = async (answers) => {
     setLoading(true)
     try {
-      const result = await answerQuiz(STUDENT_ID, answers)
+      const result = await answerQuiz(answers)
       pushTeachingSteps(result)
       setActiveQuiz(result.status === 'awaiting_answers' ? result.quiz : null)
       if (result.status === 'done') {

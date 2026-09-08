@@ -1,31 +1,41 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
-const MOCK_PATH = [
-  { name: 'Linear Algebra', minutes: 15, done: true },
-  { name: 'Calculus', minutes: 20, done: false },
-  { name: 'Neural Networks', minutes: 25, done: false },
-]
+import { getLearningPath } from '../api/client.js'
 
 export default function Dashboard() {
+  const [path, setPath] = useState(null)
+
+  useEffect(() => { getLearningPath().then(setPath) }, [])
+
   return (
     <div className="paper-panel" style={{ padding: 32, marginTop: 24 }}>
       <div className="washi-tape" />
       <div className="pill-label">TODAY'S LEARNING PATH</div>
       <h2 style={{ marginTop: 12 }}>Your Adaptive Study Plan</h2>
 
+      {path === null && <p style={{ marginTop: 20, color: 'var(--ink-soft)' }}>Loading your path…</p>}
+
+      {path?.length === 0 && (
+        <p style={{ marginTop: 20, color: 'var(--ink-soft)' }}>
+          Nothing new to recommend yet — ask your agent a question to get started!
+        </p>
+      )}
+
       <div style={{ marginTop: 20 }}>
-        {MOCK_PATH.map((step, i) => (
-          <div key={step.name} style={{
+        {path?.map((step, i) => (
+          <div key={step.concept_id} style={{
             display: 'flex', alignItems: 'center', gap: 16, padding: '12px 0',
-            borderBottom: i < MOCK_PATH.length - 1 ? '1px solid #EFEBE0' : 'none',
+            borderBottom: i < path.length - 1 ? '1px solid #EFEBE0' : 'none',
           }}>
             <div style={{
               width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: step.done ? 'var(--mint)' : 'var(--lavender-soft)', color: step.done ? 'white' : 'var(--ink)',
-              fontWeight: 600, fontSize: '0.85rem',
-            }}>{step.done ? '✓' : i + 1}</div>
-            <div style={{ flex: 1 }}>{step.name}</div>
-            <div style={{ color: 'var(--coral)', fontWeight: 600 }}>{step.minutes} min</div>
+              background: 'var(--lavender-soft)', color: 'var(--ink)', fontWeight: 600, fontSize: '0.85rem',
+            }}>{i + 1}</div>
+            <div style={{ flex: 1 }}>
+              {step.concept_name}
+              <div style={{ fontSize: '0.75rem', color: 'var(--ink-soft)' }}>{step.domain}</div>
+            </div>
+            <div style={{ color: 'var(--coral)', fontWeight: 600 }}>{step.estimated_minutes} min</div>
           </div>
         ))}
       </div>

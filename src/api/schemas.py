@@ -61,3 +61,10 @@ class ConceptOut(BaseModel):
     name: str
     domain: str
     description: str
+
+class LearningPathStep(BaseModel):
+    concept_id: str
+    concept_name: str
+    domain: str
+    estimated_minutes: int
+    done: bool

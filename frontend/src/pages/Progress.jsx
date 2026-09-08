@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react'
 import { getMastery } from '../api/client.js'
 import MasteryRing from '../components/MasteryRing.jsx'
 
-const STUDENT_ID = 'student_001'
-
 export default function Progress() {
   const [mastery, setMastery] = useState([])
 
-  useEffect(() => { getMastery(STUDENT_ID).then(data => setMastery(data.mastery)) }, [])
+  useEffect(() => { getMastery().then(data => setMastery(data.mastery)) }, [])
 
   const byDomain = mastery.reduce((acc, m) => {
     acc[m.domain] = acc[m.domain] || []

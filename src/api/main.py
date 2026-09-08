@@ -12,10 +12,14 @@ from src.db.database import SessionLocal
 from src.db.repository import get_student_model
 from src.api.schemas import (
     AskRequest, AnswerRequest, TutorTurnResponse, QuizOut, QuizOptionOut, QuizQuestionOut,
-    TutoringStepOut, StudentMasteryResponse, MasteryEntry, ConceptOut,
+    TutoringStepOut, StudentMasteryResponse, MasteryEntry, ConceptOut, LearningPathStep,
 )
 from src.api.auth_routes import router as auth_router
 from src.auth.dependencies import get_current_student_id
+from src.config import MASTERY_THRESHOLD
+
+# Rough estimate — could later be derived from actual quiz/tutoring time logs
+_MINUTES_BY_DOMAIN = {"Math": 15, "CS": 20, "ML": 25, "Physics": 20}
 
 # Built once at startup — shared across all requests. Cheap/pure, no I/O beyond the JSON read.
 cg = ConceptGraph.from_dataset_json("data/concepts_dataset.json")
@@ -128,3 +132,24 @@ def list_concepts():
         )
         for cid, data in cg.graph.nodes(data=True)
     ]
+
+
+@app.get("/student/me/learning-path", response_model=list[LearningPathStep])
+def learning_path(student_id: str = Depends(get_current_student_id)):
+    db = SessionLocal()
+    try:
+        model = get_student_model(db, student_id)
+    finally:
+        db.close()
+
+    recommended_ids = cg.get_next_recommended_concepts(model.mastery, MASTERY_THRESHOLD, limit=4)
+
+    steps = []
+    for cid in recommended_ids:
+        info = cg.get_concept_info(cid)
+        steps.append(LearningPathStep(
+            concept_id=cid, concept_name=info["name"], domain=info["domain"],
+            estimated_minutes=_MINUTES_BY_DOMAIN.get(info["domain"], 15),
+            done=False,
+        ))
+    return steps

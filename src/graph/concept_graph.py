@@ -91,6 +91,27 @@ class ConceptGraph:
 
         return cg
 
+    def get_next_recommended_concepts(
+        self, mastery: dict[str, float], threshold: float, limit: int = 4
+    ) -> list[str]:
+        """
+        Returns up to `limit` concept ids the student is ready to learn next:
+        not yet mastered, but every direct prerequisite already is.
+        Ordered by the graph's natural topological order (earlier concepts first).
+        """
+        mastered = {cid for cid, score in mastery.items() if score is not None and score >= threshold}
+
+        recommended = []
+        for cid in nx.topological_sort(self.graph):
+            if cid in mastered:
+                continue
+            prereqs = set(self.get_direct_prerequisites(cid))
+            if prereqs.issubset(mastered):
+                recommended.append(cid)
+            if len(recommended) >= limit:
+                break
+        return recommended
+
     def get_concept_info(self, concept_id: str) -> dict:
         """Returns {'name', 'domain', 'description'} for a single concept."""
         if concept_id not in self.graph.nodes:
