@@ -161,6 +161,126 @@
       "name": "Quantum Mechanics",
       "domain": "Physics",
       "description": "Fundamental theory of physics at atomic and subatomic scales."
+    },
+    {
+      "id": "cell_structure",
+      "name": "Cell Structure",
+      "domain": "Biology",
+      "description": "The overall organization and components of a cell, including its membrane and internal structures."
+    },
+    {
+      "id": "organelles",
+      "name": "Organelles",
+      "domain": "Biology",
+      "description": "Specialized subunits within a cell that perform distinct functions, such as the nucleus and mitochondria."
+    },
+    {
+      "id": "nucleus",
+      "name": "Nucleus",
+      "domain": "Biology",
+      "description": "The membrane-bound organelle that houses the cell's genetic material."
+    },
+    {
+      "id": "mitochondria",
+      "name": "Mitochondria",
+      "domain": "Biology",
+      "description": "The organelle responsible for producing ATP through cellular respiration."
+    },
+    {
+      "id": "endoplasmic_reticulum",
+      "name": "Endoplasmic Reticulum",
+      "domain": "Biology",
+      "description": "A network of membranes involved in protein and lipid synthesis and transport."
+    },
+    {
+      "id": "golgi_apparatus",
+      "name": "Golgi Apparatus",
+      "domain": "Biology",
+      "description": "An organelle that modifies, sorts, and packages proteins for secretion."
+    },
+    {
+      "id": "cell_membrane",
+      "name": "Cell Membrane",
+      "domain": "Biology",
+      "description": "The lipid bilayer that encloses the cell, regulating entry and exit of substances."
+    },
+    {
+      "id": "cytoplasm",
+      "name": "Cytoplasm",
+      "domain": "Biology",
+      "description": "The gel-like substance inside the cell that contains organelles."
+    },
+    {
+      "id": "prokaryotic_cells",
+      "name": "Prokaryotic Cells",
+      "domain": "Biology",
+      "description": "Cells lacking a nucleus and membrane-bound organelles."
+    },
+    {
+      "id": "eukaryotic_cells",
+      "name": "Eukaryotic Cells",
+      "domain": "Biology",
+      "description": "Cells containing a nucleus and membrane-bound organelles."
+    },
+    {
+      "id": "cell_division",
+      "name": "Cell Division",
+      "domain": "Biology",
+      "description": "The process by which a cell replicates its contents and splits into daughter cells."
+    },
+    {
+      "id": "mitosis",
+      "name": "Mitosis",
+      "domain": "Biology",
+      "description": "A type of cell division resulting in two genetically identical daughter cells."
+    },
+    {
+      "id": "meiosis",
+      "name": "Meiosis",
+      "domain": "Biology",
+      "description": "A type of cell division that produces four genetically diverse gametes."
+    },
+    {
+      "id": "cellular_respiration",
+      "name": "Cellular Respiration",
+      "domain": "Biology",
+      "description": "The set of metabolic pathways that convert glucose and oxygen into ATP."
+    },
+    {
+      "id": "glycolysis",
+      "name": "Glycolysis",
+      "domain": "Biology",
+      "description": "The anaerobic breakdown of glucose into pyruvate, yielding a small amount of ATP."
+    },
+    {
+      "id": "citric_acid_cycle",
+      "name": "Citric Acid Cycle",
+      "domain": "Biology",
+      "description": "A series of reactions in the mitochondria that oxidize acetyl\u2011CoA to produce NADH, FADH2, and ATP."
+    },
+    {
+      "id": "electron_transport_chain",
+      "name": "Electron Transport Chain",
+      "domain": "Biology",
+      "description": "A chain of protein complexes that uses electrons to generate a proton gradient for ATP synthesis."
+    },
+    {
+      "id": "photosynthesis",
+      "name": "Photosynthesis",
+      "domain": "Biology",
+      "description": "The process by which plants convert light energy into chemical energy stored in glucose."
+    },
+    {
+      "id": "light_dependent_reactions",
+      "name": "Light\u2011Dependent Reactions",
+      "domain": "Biology",
+      "description": "The photosynthetic reactions that convert light energy into chemical energy (ATP and NADPH)."
+    },
+    {
+      "id": "calvin_cycle",
+      "name": "Calvin Cycle",
+      "domain": "Biology",
+      "description": "The set of reactions that fix carbon dioxide into glucose using ATP and NADPH."
     }
   ],
   "prerequisites": [
@@ -291,6 +411,90 @@
     {
       "prerequisite_id": "differential_equations",
       "concept_id": "quantum_mechanics"
+    },
+    {
+      "prerequisite_id": "cell_structure",
+      "concept_id": "organelles"
+    },
+    {
+      "prerequisite_id": "cell_structure",
+      "concept_id": "cell_membrane"
+    },
+    {
+      "prerequisite_id": "cell_structure",
+      "concept_id": "cytoplasm"
+    },
+    {
+      "prerequisite_id": "cell_structure",
+      "concept_id": "prokaryotic_cells"
+    },
+    {
+      "prerequisite_id": "cell_structure",
+      "concept_id": "eukaryotic_cells"
+    },
+    {
+      "prerequisite_id": "organelles",
+      "concept_id": "nucleus"
+    },
+    {
+      "prerequisite_id": "organelles",
+      "concept_id": "mitochondria"
+    },
+    {
+      "prerequisite_id": "organelles",
+      "concept_id": "endoplasmic_reticulum"
+    },
+    {
+      "prerequisite_id": "organelles",
+      "concept_id": "golgi_apparatus"
+    },
+    {
+      "prerequisite_id": "mitochondria",
+      "concept_id": "cellular_respiration"
+    },
+    {
+      "prerequisite_id": "cellular_respiration",
+      "concept_id": "glycolysis"
+    },
+    {
+      "prerequisite_id": "cellular_respiration",
+      "concept_id": "citric_acid_cycle"
+    },
+    {
+      "prerequisite_id": "cellular_respiration",
+      "concept_id": "electron_transport_chain"
+    },
+    {
+      "prerequisite_id": "glycolysis",
+      "concept_id": "citric_acid_cycle"
+    },
+    {
+      "prerequisite_id": "citric_acid_cycle",
+      "concept_id": "electron_transport_chain"
+    },
+    {
+      "prerequisite_id": "cell_structure",
+      "concept_id": "cell_division"
+    },
+    {
+      "prerequisite_id": "nucleus",
+      "concept_id": "cell_division"
+    },
+    {
+      "prerequisite_id": "cell_division",
+      "concept_id": "mitosis"
+    },
+    {
+      "prerequisite_id": "cell_division",
+      "concept_id": "meiosis"
+    },
+    {
+      "prerequisite_id": "photosynthesis",
+      "concept_id": "light_dependent_reactions"
+    },
+    {
+      "prerequisite_id": "photosynthesis",
+      "concept_id": "calvin_cycle"
     }
   ]
 }

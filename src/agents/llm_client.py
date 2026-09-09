@@ -9,14 +9,26 @@ from src.config import LLM_MAX_RETRIES, LLM_RETRY_MIN_WAIT, LLM_RETRY_MAX_WAIT
 load_dotenv()
 
 
-def get_groq_llm(reasoning_effort: str = "medium", temperature: float = 0.0) -> ChatGroq:
-    """Shared factory — every agent node builds its LLM through this."""
+def get_groq_llm(
+    reasoning_effort: str = "medium", temperature: float = 0.0, max_tokens: int | None = None
+) -> ChatGroq:
+    """Shared factory — every agent node builds its LLM through this.
+
+    max_tokens matters most for "medium"/"high" reasoning_effort on complex
+    structured-output calls: without an explicit budget, hidden reasoning can
+    silently consume the whole completion before any JSON is emitted. Callers
+    generating large/complex structures should pass one explicitly (see
+    generate_dataset.py's own direct ChatGroq call for the reasoning behind
+    the specific numbers — reasoning_effort="high" alone needs ~13k tokens on
+    this model, which exceeds this account's 8,000 TPM free-tier cap no
+    matter what max_tokens is set to; "medium" comfortably fits instead)."""
     groq_api_key = os.getenv("GROQ_API_KEY")
     return ChatGroq(
         model="openai/gpt-oss-120b",
         temperature=temperature,
         reasoning_effort=reasoning_effort,
         reasoning_format="hidden",
+        max_tokens=max_tokens,
         api_key=SecretStr(groq_api_key) if groq_api_key is not None else None,
     )
 

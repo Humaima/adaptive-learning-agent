@@ -1,0 +1,21 @@
+Introduction to Cell Biology
+
+Week 1: Cell Structure
+Overview of the cell as the basic unit of life. Organelles (nucleus, mitochondria,
+endoplasmic reticulum, Golgi apparatus), the cell membrane, and cytoplasm. The
+difference between prokaryotic and eukaryotic cells.
+
+Week 2: Cell Division
+Mitosis and meiosis — how cells replicate and how genetic material is distributed
+to daughter cells. This week assumes a basic understanding of DNA and genetics
+from prior coursework.
+
+Week 3: Cellular Respiration
+How cells convert glucose and oxygen into usable energy (ATP) through glycolysis,
+the citric acid cycle, and the electron transport chain. Builds directly on the
+organelle structure covered in Week 1 (particularly mitochondria).
+
+Week 4: Photosynthesis
+How plant cells convert light energy into chemical energy. Draws a direct
+comparison to cellular respiration from Week 3, since photosynthesis and
+respiration are complementary processes.
