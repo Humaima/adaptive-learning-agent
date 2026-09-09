@@ -1,5 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
+from datetime import datetime
 
 class AskRequest(BaseModel):
     question: str
@@ -68,3 +69,18 @@ class LearningPathStep(BaseModel):
     domain: str
     estimated_minutes: int
     done: bool
+
+
+class NoteCreate(BaseModel):
+    concept_id: str
+    title: str
+    content: str
+
+class NoteOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    concept_id: str
+    title: str
+    content: str
+    created_at: datetime

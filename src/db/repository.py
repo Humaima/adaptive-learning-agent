@@ -83,9 +83,39 @@ def get_student_by_username(db: Session, username: str) -> StudentDB | None:
     return db.query(StudentDB).filter_by(student_id=username).first()
 
 
+def get_student_by_email(db: Session, email: str) -> StudentDB | None:
+    return db.query(StudentDB).filter_by(email=email).first()
+
+
 def create_student_with_password(db: Session, username: str, email: str, hashed_password: str) -> StudentDB:
     student = StudentDB(student_id=username, email=email, hashed_password=hashed_password)
     db.add(student)
     db.commit()
     db.refresh(student)
     return student
+
+
+from src.db.models import NoteDB
+
+def create_note(db: Session, student_id: str, concept_id: str, title: str, content: str) -> NoteDB:
+    student = get_or_create_student(db, student_id)
+    note = NoteDB(student_pk=student.id, concept_id=concept_id, title=title, content=content)
+    db.add(note)
+    db.commit()
+    db.refresh(note)
+    return note
+
+
+def list_notes(db: Session, student_id: str) -> list[NoteDB]:
+    student = get_or_create_student(db, student_id)
+    return db.query(NoteDB).filter_by(student_pk=student.id).order_by(NoteDB.created_at.desc()).all()
+
+
+def delete_note(db: Session, student_id: str, note_id: int) -> bool:
+    student = get_or_create_student(db, student_id)
+    note = db.query(NoteDB).filter_by(id=note_id, student_pk=student.id).first()
+    if not note:
+        return False
+    db.delete(note)
+    db.commit()
+    return True

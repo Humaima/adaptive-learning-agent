@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getLearningPath, askAgent, answerQuiz } from '../api/client.js'
+import { getLearningPath, askAgent, answerQuiz, addNote } from '../api/client.js'
 import NotebookSpread from '../components/NotebookSpread.jsx'
 import WashiTape from '../components/decor/WashiTape.jsx'
 import Ribbon from '../components/decor/Ribbon.jsx'
@@ -25,6 +25,8 @@ export default function Dashboard() {
   const pushTeachingSteps = (result) => {
     const steps = (result.teaching_history || []).map(s => ({
       role: 'agent',
+      concept_id: s.concept_id,
+      concept_name: s.concept_name,
       text: `${s.transition_note ? s.transition_note + '\n\n' : ''}${s.explanation}`,
     }))
     setMessages(prev => [...prev, ...steps])
@@ -93,7 +95,14 @@ export default function Dashboard() {
       <h2 style={{ marginTop: 12, marginBottom: 16 }}>What are you working on?</h2>
 
       <div style={{ minHeight: 220, maxHeight: 340, overflowY: 'auto' }}>
-        {messages.map((m, i) => <ChatBubble key={i} role={m.role}>{m.text}</ChatBubble>)}
+        {messages.map((m, i) => (
+          <ChatBubble
+            key={i} role={m.role}
+            onSave={m.role === 'agent' ? () => addNote(m.concept_id, m.concept_name, m.text) : null}
+          >
+            {m.text}
+          </ChatBubble>
+        ))}
         {activeQuiz && <QuizCard quiz={activeQuiz} onSubmit={handleQuizSubmit} submitting={loading} />}
       </div>
 

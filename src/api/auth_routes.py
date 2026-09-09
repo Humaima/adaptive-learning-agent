@@ -4,9 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import JWTError
 from pydantic import BaseModel
+from sqlalchemy.exc import IntegrityError
 
 from src.db.database import get_db
-from src.db.repository import get_student_by_username, create_student_with_password
+from src.db.repository import get_student_by_username, get_student_by_email, create_student_with_password
 from src.auth.security import (
     hash_password, verify_password, create_access_token,
     create_refresh_token, decode_refresh_token,
@@ -37,8 +38,17 @@ class TokenResponse(BaseModel):
 def register(request: Request, body: RegisterRequest, db=Depends(get_db)):
     if get_student_by_username(db, body.username):
         raise HTTPException(status_code=400, detail="Username already taken")
+    if get_student_by_email(db, body.email):
+        raise HTTPException(status_code=400, detail="An account with this email already exists")
 
-    create_student_with_password(db, body.username, body.email, hash_password(body.password))
+    try:
+        create_student_with_password(db, body.username, body.email, hash_password(body.password))
+    except IntegrityError:
+        # Belt-and-suspenders for a race between the checks above and this insert
+        # (two near-simultaneous requests for the same username/email) — without
+        # this, that race surfaces as an unhandled 500 instead of a clean 400.
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Username or email already taken")
     return TokenResponse(
         access_token=create_access_token(body.username),
         refresh_token=create_refresh_token(body.username),

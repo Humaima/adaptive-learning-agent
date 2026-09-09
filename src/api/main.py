@@ -26,6 +26,8 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
 from src.api.rate_limit import limiter
+from src.api.study_tools_routes import router as study_tools_router
+
 
 # Rough estimate — could later be derived from actual quiz/tutoring time logs
 _MINUTES_BY_DOMAIN = {"Math": 15, "CS": 20, "ML": 25, "Physics": 20}
@@ -62,11 +64,17 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Adaptive Learning Agent API", lifespan=lifespan)
-
+app.include_router(study_tools_router)
 app.include_router(auth_router)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://adaptive-learning-agent-lake.vercel.app"],  # Vite dev + prod
+    allow_origins=["https://adaptive-learning-agent-lake.vercel.app"],  # prod, exact match
+    # Vite falls back to 5174, 5175, ... whenever 5173 is already taken (e.g. a
+    # leftover Docker container, another dev server) — pinning one exact port
+    # here caused every request to silently fail CORS the moment that happened.
+    # Any localhost port is safe to allow broadly since this only ever matches
+    # requests actually originating from the developer's own machine.
+    allow_origin_regex=r"http://localhost:\d+",
     allow_methods=["*"],
     allow_headers=["*"],
 )

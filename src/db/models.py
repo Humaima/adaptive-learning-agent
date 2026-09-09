@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 from src.db.database import Base
 
 
+
 class StudentDB(Base):
     __tablename__ = "students"
     id = Column(Integer, primary_key=True, index=True)
@@ -15,6 +16,7 @@ class StudentDB(Base):
 
     mastery_records = relationship("MasteryRecordDB", back_populates="student", cascade="all, delete-orphan")
     interactions = relationship("InteractionDB", back_populates="student", cascade="all, delete-orphan")
+    notes = relationship("NoteDB", back_populates="student", cascade="all, delete-orphan")
 
 
 class MasteryRecordDB(Base):
@@ -43,3 +45,14 @@ class InteractionDB(Base):
     timestamp = Column(DateTime, default=datetime.utcnow)
 
     student = relationship("StudentDB", back_populates="interactions")
+
+class NoteDB(Base):
+    __tablename__ = "notes"
+    id = Column(Integer, primary_key=True, index=True)
+    student_pk = Column(Integer, ForeignKey("students.id"), nullable=False)
+    concept_id = Column(String, nullable=False)
+    title = Column(String, nullable=False)
+    content = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    student = relationship("StudentDB", back_populates="notes")

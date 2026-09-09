@@ -66,3 +66,7 @@ export const answerQuiz = (answers) => client.post('/answer', { answers }).then(
 export const getMastery = () => client.get('/student/me/mastery').then(r => r.data)
 export const getConcepts = () => client.get('/concepts').then(r => r.data)
 export const getLearningPath = () => client.get('/student/me/learning-path').then(r => r.data)
+export const addNote = (concept_id, title, content) =>
+  client.post('/notes', { concept_id, title, content }).then(r => r.data)
+export const getNotes = () => client.get('/notes').then(r => r.data)
+export const deleteNote = (id) => client.delete(`/notes/${id}`).then(r => r.data)

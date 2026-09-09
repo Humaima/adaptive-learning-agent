@@ -2,3 +2,5 @@
 .chat-bubble { max-width: 75%; padding: 14px 18px; border-radius: 18px; margin: 10px 0; line-height: 1.5; }
 .chat-bubble.student { background: var(--coral-soft); margin-left: auto; border-bottom-right-radius: 4px; }
 .chat-bubble.agent { background: var(--lavender-soft); margin-right: auto; border-bottom-left-radius: 4px; }
+.save-note-btn { display: block; margin-top: 8px; background: none; border: none; color: var(--ink-soft); font-size: 0.75rem; cursor: pointer; }
+.save-note-btn:hover { color: var(--coral); }
