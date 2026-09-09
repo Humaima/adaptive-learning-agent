@@ -84,3 +84,19 @@ class NoteOut(BaseModel):
     title: str
     content: str
     created_at: datetime
+
+
+class FlashcardGenerateRequest(BaseModel):
+    concept_id: str
+
+class FlashcardOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    concept_id: str
+    front: str
+    back: str
+    next_review_at: datetime
+
+class FlashcardReviewRequest(BaseModel):
+    knew_it: bool

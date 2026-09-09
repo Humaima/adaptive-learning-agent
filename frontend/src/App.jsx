@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import AskAgent from './pages/AskAgent.jsx'
 import Progress from './pages/Progress.jsx'
 import Notes from './pages/Notes.jsx'
+import Flashcards from './pages/Flashcards.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import { isLoggedIn } from './api/client.js'
@@ -26,6 +27,7 @@ export default function App() {
                 <Route path="/ask" element={<AskAgent />} />
                 <Route path="/progress" element={<Progress />} />
                 <Route path="/notes" element={<Notes />} />
+                <Route path="/flashcards" element={<Flashcards />} />
               </Routes>
             </Layout>
           </ProtectedRoute>

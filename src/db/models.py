@@ -17,7 +17,7 @@ class StudentDB(Base):
     mastery_records = relationship("MasteryRecordDB", back_populates="student", cascade="all, delete-orphan")
     interactions = relationship("InteractionDB", back_populates="student", cascade="all, delete-orphan")
     notes = relationship("NoteDB", back_populates="student", cascade="all, delete-orphan")
-
+    flashcards = relationship("FlashcardDB", back_populates="student", cascade="all, delete-orphan")
 
 class MasteryRecordDB(Base):
     """One row per (student, concept) — current mastery estimate."""
@@ -56,3 +56,17 @@ class NoteDB(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     student = relationship("StudentDB", back_populates="notes")
+
+
+class FlashcardDB(Base):
+    __tablename__ = "flashcards"
+    id = Column(Integer, primary_key=True, index=True)
+    student_pk = Column(Integer, ForeignKey("students.id"), nullable=False)
+    concept_id = Column(String, nullable=False)
+    front = Column(String, nullable=False)
+    back = Column(String, nullable=False)
+    interval_days = Column(Integer, default=1)
+    next_review_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    student = relationship("StudentDB", back_populates="flashcards")

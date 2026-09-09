@@ -1,10 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import cast
 
 from sqlalchemy.orm import Session
 
-from src.db.models import StudentDB, MasteryRecordDB, InteractionDB
+from src.db.models import StudentDB, MasteryRecordDB, InteractionDB, NoteDB, FlashcardDB
 from src.models.schemas import StudentModel, MasteryRecord, Interaction
+from src.study_tools.spaced_repetition import compute_next_interval
 
 
 def get_or_create_student(db: Session, student_id: str) -> StudentDB:
@@ -95,8 +96,6 @@ def create_student_with_password(db: Session, username: str, email: str, hashed_
     return student
 
 
-from src.db.models import NoteDB
-
 def create_note(db: Session, student_id: str, concept_id: str, title: str, content: str) -> NoteDB:
     student = get_or_create_student(db, student_id)
     note = NoteDB(student_pk=student.id, concept_id=concept_id, title=title, content=content)
@@ -119,3 +118,35 @@ def delete_note(db: Session, student_id: str, note_id: int) -> bool:
     db.delete(note)
     db.commit()
     return True
+
+
+def create_flashcards(db: Session, student_id: str, concept_id: str, cards: list[tuple[str, str]]) -> list[FlashcardDB]:
+    student = get_or_create_student(db, student_id)
+    created = [FlashcardDB(student_pk=student.id, concept_id=concept_id, front=f, back=b) for f, b in cards]
+    db.add_all(created)
+    db.commit()
+    for card in created:
+        db.refresh(card)
+    return created
+
+
+def get_due_flashcards(db: Session, student_id: str) -> list[FlashcardDB]:
+    student = get_or_create_student(db, student_id)
+    return (
+        db.query(FlashcardDB)
+        .filter(FlashcardDB.student_pk == student.id, FlashcardDB.next_review_at <= datetime.utcnow())
+        .all()
+    )
+
+
+def review_flashcard(db: Session, student_id: str, flashcard_id: int, knew_it: bool) -> FlashcardDB | None:
+    student = get_or_create_student(db, student_id)
+    card = db.query(FlashcardDB).filter_by(id=flashcard_id, student_pk=student.id).first()
+    if not card:
+        return None
+    new_interval = compute_next_interval(cast(int, card.interval_days), knew_it)
+    setattr(card, "interval_days", new_interval)
+    setattr(card, "next_review_at", datetime.utcnow() + timedelta(days=new_interval))
+    db.commit()
+    db.refresh(card)
+    return card
