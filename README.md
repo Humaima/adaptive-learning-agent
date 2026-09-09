@@ -8,8 +8,8 @@ Built with **LangGraph**, **FastAPI**, **React**, and **Groq (`openai/gpt-oss-12
 
 ## Live Demo
 
-- App: [your-frontend.vercel.app](#)
-- API docs: [your-backend.onrender.com/docs](#)
+- App: [https://adaptive-learning-agent-lake.vercel.app/](#)
+- API docs: [https://adaptive-learning-agent-ux86.onrender.com/docs](#)
 
 ![Demo](docs/demo.gif)
 
