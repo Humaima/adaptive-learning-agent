@@ -100,3 +100,14 @@ class FlashcardOut(BaseModel):
 
 class FlashcardReviewRequest(BaseModel):
     knew_it: bool
+
+class QuizHistoryEntry(BaseModel):
+    concept_id: str
+    concept_name: str
+    question_snippet: str
+    correct: bool
+    timestamp: datetime
+
+class QuizHistoryResponse(BaseModel):
+    entries: list[QuizHistoryEntry]
+    overall_accuracy: float

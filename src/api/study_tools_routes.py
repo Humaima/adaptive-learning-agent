@@ -1,9 +1,13 @@
+from datetime import datetime
+from typing import cast
+
 from fastapi import APIRouter, Depends, HTTPException
 
 from src.db.database import get_db
 from src.db.repository import (
     create_note, list_notes, delete_note,
     create_flashcards, get_due_flashcards, review_flashcard,
+    get_quiz_history,
 )
 from src.auth.dependencies import get_current_student_id
 from src.graph.concept_graph import ConceptGraph
@@ -11,12 +15,13 @@ from src.agents.flashcard_generator import generate_flashcards
 from src.api.schemas import (
     NoteCreate, NoteOut,
     FlashcardGenerateRequest, FlashcardOut, FlashcardReviewRequest,
+    QuizHistoryEntry, QuizHistoryResponse,
 )
 
 router = APIRouter(tags=["study-tools"])
-# Study-tools routes need concept name/description lookups (flashcard generation) —
-# self-contained like auth_routes.py, since main.py can't be imported back into a
-# router it itself includes (circular import).
+# Study-tools routes need concept name/description lookups (flashcard generation,
+# quiz history) — self-contained like auth_routes.py, since main.py can't be
+# imported back into a router it itself includes (circular import).
 cg = ConceptGraph.from_dataset_json("data/concepts_dataset.json")
 
 
@@ -58,3 +63,22 @@ def review(flashcard_id: int, body: FlashcardReviewRequest, student_id: str = De
     if not card:
         raise HTTPException(status_code=404, detail="Flashcard not found")
     return FlashcardOut.model_validate(card)
+
+
+@router.get("/quiz-history", response_model=QuizHistoryResponse)
+def quiz_history(student_id: str = Depends(get_current_student_id), db=Depends(get_db)):
+    interactions = get_quiz_history(db, student_id)
+    entries, correct_count = [], 0
+    for i in interactions:
+        concept_id = cast(str, i.concept_id)
+        is_correct = bool(cast("bool | None", i.correct))
+        name = cg.get_concept_info(concept_id)["name"] if concept_id in cg.graph.nodes else concept_id
+        entries.append(QuizHistoryEntry(
+            concept_id=concept_id, concept_name=name,
+            question_snippet=cast(str, i.content)[:80], correct=is_correct,
+            timestamp=cast(datetime, i.timestamp),
+        ))
+        if is_correct:
+            correct_count += 1
+    accuracy = correct_count / len(entries) if entries else 0.0
+    return QuizHistoryResponse(entries=entries, overall_accuracy=round(accuracy, 3))

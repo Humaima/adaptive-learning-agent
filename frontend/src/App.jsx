@@ -5,6 +5,7 @@ import AskAgent from './pages/AskAgent.jsx'
 import Progress from './pages/Progress.jsx'
 import Notes from './pages/Notes.jsx'
 import Flashcards from './pages/Flashcards.jsx'
+import QuizHistory from './pages/QuizHistory.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import { isLoggedIn } from './api/client.js'
@@ -28,6 +29,7 @@ export default function App() {
                 <Route path="/progress" element={<Progress />} />
                 <Route path="/notes" element={<Notes />} />
                 <Route path="/flashcards" element={<Flashcards />} />
+                <Route path="/quiz-history" element={<QuizHistory />} />
               </Routes>
             </Layout>
           </ProtectedRoute>

@@ -74,3 +74,4 @@ export const deleteNote = (id) => client.delete(`/notes/${id}`).then(r => r.data
 export const generateFlashcards = (concept_id) => client.post('/flashcards/generate', { concept_id }).then(r => r.data)
 export const getDueFlashcards = () => client.get('/flashcards/due').then(r => r.data)
 export const reviewFlashcard = (id, knew_it) => client.post(`/flashcards/${id}/review`, { knew_it }).then(r => r.data)
+export const getQuizHistory = () => client.get('/quiz-history').then(r => r.data)

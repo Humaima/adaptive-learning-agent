@@ -150,3 +150,12 @@ def review_flashcard(db: Session, student_id: str, flashcard_id: int, knew_it: b
     db.commit()
     db.refresh(card)
     return card
+
+def get_quiz_history(db: Session, student_id: str) -> list[InteractionDB]:
+    student = get_or_create_student(db, student_id)
+    return (
+        db.query(InteractionDB)
+        .filter_by(student_pk=student.id, interaction_type="quiz_answer")
+        .order_by(InteractionDB.timestamp.desc())
+        .all()
+    )

@@ -13,6 +13,7 @@ export default function NavBar() {
         <NavLink to="/progress" className={({ isActive }) => isActive ? 'active' : ''}>Progress</NavLink>
         <NavLink to="/notes" className={({ isActive }) => isActive ? 'active' : ''}>Notes</NavLink>
         <NavLink to="/flashcards" className={({ isActive }) => isActive ? 'active' : ''}>Flashcards</NavLink>
+        <NavLink to="/quiz-history" className={({ isActive }) => isActive ? 'active' : ''}>Quiz History</NavLink>
       </div>
       <button onClick={() => { logout(); navigate('/login') }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-soft)' }}>
         Log out
