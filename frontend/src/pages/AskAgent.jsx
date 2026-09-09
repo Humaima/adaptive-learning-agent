@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { askAgent, answerQuiz } from '../api/client.js'
+import { askAgent, answerQuiz, addNote } from '../api/client.js'
 import ChatBubble from '../components/ChatBubble.jsx'
 import QuizCard from '../components/QuizCard.jsx'
 import '../components/ChatBubble.css'
@@ -15,6 +15,8 @@ export default function AskAgent() {
     const steps = turnResponse.teaching_history || []
     const newBubbles = steps.map(step => ({
       role: 'agent',
+      concept_id: step.concept_id,
+      concept_name: step.concept_name,
       text: `${step.transition_note ? step.transition_note + '\n\n' : ''}${step.explanation}\n\nWorked example: ${step.worked_example}`,
     }))
     setMessages(prev => [...prev, ...newBubbles])
@@ -55,7 +57,12 @@ export default function AskAgent() {
 
       <div style={{ minHeight: 200 }}>
         {messages.map((m, i) => (
-          <ChatBubble key={i} role={m.role}>{m.text}</ChatBubble>
+          <ChatBubble
+            key={i} role={m.role}
+            onSave={m.role === 'agent' ? () => addNote(m.concept_id, m.concept_name, m.text) : null}
+          >
+            {m.text}
+          </ChatBubble>
         ))}
         {activeQuiz && <QuizCard quiz={activeQuiz} onSubmit={handleQuizSubmit} submitting={loading} />}
       </div>
