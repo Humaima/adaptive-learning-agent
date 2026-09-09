@@ -11,7 +11,7 @@ Built with **LangGraph**, **FastAPI**, **React**, and **Groq (`openai/gpt-oss-12
 - App: [https://adaptive-learning-agent-lake.vercel.app/](#)
 - API docs: [https://adaptive-learning-agent-ux86.onrender.com/docs](#)
 
-![Demo](docs/demo.gif)
+![Demo](docs/demo.gif) 
 
 ## How It Works
 
